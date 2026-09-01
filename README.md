@@ -29,7 +29,7 @@ interdit par leurs règles.
 - [Installation — 6 étapes](#installation--6-étapes)
   - [1. Installer Node.js](#1-installer-nodejs)
   - [2. Installer VS Code](#2-installer-vs-code)
-  - [3. Installer le plugin](#3-installer-le-plugin)
+  - [3. Télécharger le dossier](#3-télécharger-le-dossier)
   - [4. Ouvrir le dossier dans VS Code](#4-ouvrir-le-dossier-dans-vs-code)
   - [5. Créer le fichier `.env` avec tes clés](#5-créer-le-fichier-env-avec-tes-clés)
   - [6. Ouvrir le terminal et lancer](#6-ouvrir-le-terminal-et-lancer)
@@ -50,9 +50,6 @@ interdit par leurs règles.
 **Un ordinateur** Windows, Mac ou Linux. Pas de téléphone : l'Arène est un petit
 programme qui tourne sur ta machine.
 
-**Claude Code**, déjà installé — c'est lui qui télécharge l'Arène, en deux
-commandes, à l'étape 3.
-
 **Une clé API Anthropic** — c'est ce qui fait penser les robots. Obligatoire.
 C'est une longue suite de caractères qui commence par `sk-ant-`.
 
@@ -66,9 +63,8 @@ Facultative. Sans elle, l'Arène tourne quand même : les robots écrivent au li
 de parler, et l'interruption au micro est désactivée. Tu peux commencer sans et
 l'ajouter plus tard.
 
-**Aucune connaissance en informatique.** Tu vas taper quatre commandes en tout :
-deux dans Claude Code, deux dans le terminal. Elles sont écrites en toutes
-lettres, tu n'as qu'à les copier.
+**Aucune connaissance en informatique.** Tu vas taper deux commandes en tout.
+Elles sont écrites en toutes lettres, tu n'as qu'à les copier.
 
 ---
 
@@ -102,32 +98,18 @@ sans que tu aies à en chercher un.
 4. Lance-le. Il est en anglais au départ ; une bulle en bas à droite te proposera
    le français, accepte si tu préfères.
 
-## 3. Installer le plugin
+## 3. Télécharger le dossier
 
-C'est ce qui télécharge l'Arène sur ta machine. Ça se fait depuis Claude Code,
-en deux commandes.
+1. Va sur <https://github.com/Eddyialab/agent-brainstorming-battle>
+2. Clique sur le bouton vert **`< > Code`**, puis sur **Download ZIP**.
+3. Le fichier arrive dans ton dossier *Téléchargements*. Clic droit dessus →
+   **Extraire tout** (Windows) ou double-clic (Mac).
+4. Déplace le dossier obtenu là où tu veux le garder — le Bureau, par exemple.
+   **Retiens où il est.**
 
-Ouvre Claude Code et tape ces deux lignes, l'une après l'autre, en appuyant sur
-`Entrée` entre les deux :
-
-```
-/plugin marketplace add Eddyialab/agent-brainstorming-battle
-```
-
-```
-/plugin install arene@agent-brainstorming-battle
-```
-
-C'est tout. L'Arène est maintenant sur ton disque, dans ce dossier :
-
-| | Chemin du dossier |
-|---|---|
-| **Windows** | `%USERPROFILE%\.claude\plugins\marketplaces\agent-brainstorming-battle` |
-| **Mac / Linux** | `~/.claude/plugins/marketplaces/agent-brainstorming-battle` |
-
-**Copie la ligne qui correspond à ton système**, tu la colles à l'étape
-suivante. (`%USERPROFILE%` et `~` sont des raccourcis vers ton dossier
-personnel : inutile de les remplacer par ton nom, ton ordinateur comprend.)
+> 💡 Évite de le laisser dans *Téléchargements*, et évite les dossiers
+> synchronisés type OneDrive ou Google Drive : la synchronisation en
+> arrière-plan peut perturber l'installation.
 
 ## 4. Ouvrir le dossier dans VS Code
 
@@ -136,13 +118,9 @@ ouvrir **le dossier**, pas un fichier.
 
 1. Dans VS Code : menu **Fichier** → **Ouvrir le dossier…**
    *(File → Open Folder… en anglais)*
-2. Une fenêtre s'ouvre. Plutôt que de chercher à la souris, **colle directement
-   le chemin de l'étape 3** :
-   - **Windows** — colle-le dans le champ **« Nom du fichier »** en bas, puis
-     `Entrée`.
-   - **Mac** — appuie sur `Cmd` + `Maj` + `G`, colle-le, puis `Entrée`.
-3. Clique sur **Sélectionner un dossier**.
-4. S'il demande *« Faites-vous confiance aux auteurs de ce dossier ? »*, réponds
+2. Navigue jusqu'au dossier extrait à l'étape 3, **sélectionne-le** — un seul
+   clic, ne rentre pas dedans — et clique **Sélectionner un dossier**.
+3. S'il demande *« Faites-vous confiance aux auteurs de ce dossier ? »*, réponds
    **Oui, je fais confiance**. Sans ça, le terminal sera bridé.
 
 **Comment savoir que c'est bon :** dans la colonne de gauche, tu vois la liste
@@ -416,8 +394,6 @@ Cherche ton message dans la colonne de gauche.
 
 | Ce que tu vois | Ce qui se passe |
 |---|---|
-| `/plugin` ne trouve pas le dépôt | Vérifie l'orthographe : `Eddyialab/agent-brainstorming-battle`, sans espace. Et assure-toi que ton Claude Code est à jour |
-| Le dossier de l'étape 3 n'existe pas | La première commande, `/plugin marketplace add`, n'est pas passée. Refais [l'étape 3](#3-installer-le-plugin) |
 | `npm : command not found` / `n'est pas reconnu` | Node.js n'est pas installé, ou tu n'as pas redémarré ton ordinateur après l'installation. Reprends [l'étape 1](#1-installer-nodejs) |
 | `npm ERR! enoent ... package.json` | Le terminal n'est pas dans le bon dossier : tu as ouvert un fichier au lieu du dossier. Refais [l'étape 4](#4-ouvrir-le-dossier-dans-vs-code) |
 | Des lignes jaunes `warn` pendant `npm install` | Ce ne sont pas des erreurs. Ignore |
