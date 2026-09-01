@@ -1,0 +1,27 @@
+{
+  "name": "agent-brainstorming-battle",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "L'Arene - trois IA aux visions orthogonales debattent en direct, avec voix et interruption animateur.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "arene": "node scripts/launch.mjs",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "author": "Eddyialab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Eddyialab/agent-brainstorming-battle.git"
+  }
+}

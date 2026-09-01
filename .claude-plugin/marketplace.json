@@ -1,0 +1,18 @@
+{
+  "name": "agent-brainstorming-battle",
+  "owner": {
+    "name": "Eddyialab",
+    "url": "https://github.com/Eddyialab"
+  },
+  "metadata": {
+    "description": "L'Arene — le debat a trois voix, installable en une commande.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "arene",
+      "source": "./",
+      "description": "Trois IA debattent a voix haute d'un sujet que tu choisis. Tu peux les couper a tout moment, au clavier ou au micro."
+    }
+  ]
+}

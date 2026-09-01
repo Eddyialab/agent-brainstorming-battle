@@ -1,0 +1,12 @@
+{
+  "name": "arene",
+  "version": "1.0.0",
+  "description": "L'Arene — trois IA aux grilles de lecture orthogonales debattent d'un sujet a voix haute, dans une arene HTML pensee pour la capture video. Coupe-leur la parole au clavier ou au micro.",
+  "author": {
+    "name": "Eddyialab"
+  },
+  "homepage": "https://github.com/Eddyialab/agent-brainstorming-battle",
+  "repository": "https://github.com/Eddyialab/agent-brainstorming-battle",
+  "license": "MIT",
+  "keywords": ["debat", "brainstorming", "voix", "elevenlabs", "video", "arene"]
+}

@@ -1,0 +1,306 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg: #05060c;
+  --panel: rgba(255,255,255,.045);
+  --line: rgba(255,255,255,.10);
+  --text: #eef2f8;
+  --muted: #8a93a6;
+  --active: #6b7280;      /* couleur du robot qui parle, pilotee par JS */
+  --amp: 0;               /* amplitude audio 0..1, pilotee par JS */
+}
+
+/* Sans ca, les display:grid / display:flex ci-dessous ecrasent [hidden]. */
+[hidden] { display: none !important; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------ DECORS */
+.bg-glow {
+  position: fixed; inset: -30%;
+  background: radial-gradient(50% 45% at 50% 62%,
+              color-mix(in srgb, var(--active) 30%, transparent) 0%, transparent 70%);
+  filter: blur(40px);
+  transition: background .8s ease;
+  pointer-events: none;
+}
+.bg-grid {
+  position: fixed; inset: 0; pointer-events: none; opacity: .5;
+  background-image:
+    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(70% 60% at 50% 50%, #000 20%, transparent 100%);
+}
+.bg-vignette {
+  position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(90% 80% at 50% 45%, transparent 40%, rgba(0,0,0,.75) 100%);
+}
+
+/* ---------------------------------------------------- ECRAN DE LANCEMENT */
+.setup {
+  position: fixed; inset: 0; z-index: 40;
+  display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(80% 70% at 50% 40%, #0b1020 0%, var(--bg) 70%);
+  overflow: auto;   /* la carte reste atteignable sur un ecran court */
+}
+.setup-card {
+  width: min(780px, 100%);
+  background: rgba(10,13,22,.72);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 40px clamp(24px, 5vw, 52px) 34px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 40px 120px rgba(0,0,0,.6);
+}
+.kicker { margin: 0; color: var(--muted); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+.logo {
+  font-family: Orbitron, sans-serif; font-weight: 800;
+  font-size: clamp(44px, 8vw, 76px); letter-spacing: .14em;
+  margin: 6px 0 26px;
+  background: linear-gradient(100deg, #00e5ff, #ffb020 48%, #ff2d55);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+.setup-personas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 26px; }
+.spc {
+  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  background: color-mix(in srgb, var(--c) 9%, transparent);
+  border-radius: 14px; padding: 14px 16px;
+}
+.spc b { font-family: Orbitron, sans-serif; letter-spacing: .1em; color: var(--c); display: block; font-size: 15px; }
+.spc span { display: block; color: var(--muted); font-size: 12.5px; margin-top: 4px; line-height: 1.45; }
+.spc em { display: block; font-style: normal; color: var(--c); opacity: .8; font-size: 11px;
+          text-transform: uppercase; letter-spacing: .12em; margin-top: 8px; }
+
+.field { display: block; margin-bottom: 22px; }
+.field > span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.field em { font-style: normal; color: var(--text); font-weight: 700; }
+.field small { color: #5d6478; }
+textarea, .animatorbar input {
+  width: 100%; font: inherit; color: var(--text);
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--line); border-radius: 12px;
+  padding: 13px 15px; resize: none; outline: none;
+}
+textarea:focus, .animatorbar input:focus { border-color: rgba(255,255,255,.34); }
+input[type=range] { width: 100%; accent-color: #00e5ff; }
+
+.start {
+  width: 100%; font: 700 16px Inter, sans-serif; letter-spacing: .04em;
+  color: #04060d; background: linear-gradient(100deg, #00e5ff, #7ee8ff);
+  border: 0; border-radius: 12px; padding: 15px; cursor: pointer;
+  transition: transform .15s ease, filter .15s ease;
+}
+.start:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.start:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.setup-note { min-height: 18px; margin: 12px 0 0; font-size: 12.5px; color: #d9a441; text-align: center; }
+
+/* ---------------------------------------------------------- L'ARENE */
+.arena {
+  position: relative; z-index: 2;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 18px clamp(16px, 3vw, 40px) 16px;
+  gap: 10px;
+}
+body.clean [data-chrome] { opacity: 0; pointer-events: none; }
+
+.topbar { display: flex; align-items: center; gap: 18px; transition: opacity .3s; }
+.topic {
+  flex: 1; font-size: clamp(15px, 1.6vw, 20px); font-weight: 500;
+  padding: 11px 18px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--line);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.round-pill {
+  font-family: Orbitron, sans-serif; font-size: 15px; letter-spacing: .1em;
+  padding: 10px 18px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--active) 50%, transparent);
+  background: color-mix(in srgb, var(--active) 14%, transparent);
+  color: var(--active);
+  transition: all .5s ease;
+}
+.round-pill i { opacity: .45; font-style: normal; margin: 0 3px; }
+
+/* --- scene --- */
+.stage {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  align-items: end; gap: clamp(8px, 2vw, 32px);
+  min-height: 0;
+}
+
+.pod {
+  --glow: color-mix(in srgb, var(--c) 65%, transparent);
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  height: 100%; min-height: 0;
+  filter: grayscale(.7) brightness(.58);
+  transform: scale(.86) translateY(8px);
+  transition: filter .5s ease, transform .5s cubic-bezier(.2,.9,.25,1), opacity .5s;
+  opacity: .75;
+}
+.pod.active {
+  filter: none; opacity: 1;
+  transform: scale(calc(1 + var(--amp) * .035)) translateY(0);
+}
+.pod.thinking { filter: grayscale(.4) brightness(.7); opacity: .9; transform: scale(.92); }
+
+.halo {
+  position: absolute; bottom: 6%; left: 50%; translate: -50% 0;
+  width: 86%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 62%);
+  opacity: 0; transition: opacity .45s ease;
+  filter: blur(26px);
+}
+.pod.active .halo { opacity: calc(.5 + var(--amp) * .5); }
+
+.art {
+  position: relative; z-index: 1;
+  color: var(--c);
+  width: 100%; display: flex; justify-content: center; align-items: flex-end;
+  min-height: 0; flex: 1;
+}
+.art svg, .art img { height: 100%; width: auto; max-width: 100%; object-fit: contain; display: block; }
+.pod.active .art { filter: drop-shadow(0 0 calc(14px + var(--amp) * 34px) var(--glow)); }
+
+.wave { width: 74%; height: 34px; margin-top: 6px; opacity: 0; transition: opacity .3s; }
+.pod.active .wave { opacity: .9; }
+
+.plate { text-align: center; margin-top: 8px; }
+.plate b {
+  display: block; font-family: Orbitron, sans-serif; font-weight: 800;
+  font-size: clamp(15px, 1.9vw, 24px); letter-spacing: .18em; color: var(--c);
+}
+.plate span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; letter-spacing: .04em; }
+.pod.active .plate b { text-shadow: 0 0 22px var(--glow); }
+
+.status {
+  height: 16px; margin-top: 6px; font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--c); opacity: 0; transition: opacity .3s;
+}
+.pod.thinking .status, .pod.active .status { opacity: .85; }
+.pod.thinking .status::after {
+  content: ""; animation: dots 1.2s steps(4, end) infinite;
+}
+@keyframes dots { 0%{content:""} 25%{content:"."} 50%{content:".."} 75%{content:"..."} }
+
+/* --- sous-titres --- */
+.caption {
+  min-height: clamp(84px, 13vh, 132px);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 14px clamp(18px, 4vw, 56px);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--active);
+  transition: border-color .5s ease;
+}
+.caption-who {
+  font-family: Orbitron, sans-serif; font-size: 12px; letter-spacing: .22em;
+  color: var(--active); margin-bottom: 8px; transition: color .5s ease;
+}
+.caption-text {
+  margin: 0; font-size: clamp(17px, 2.05vw, 27px); line-height: 1.36; font-weight: 500;
+  text-wrap: balance;
+}
+.caption-text .w { opacity: .16; transition: opacity .18s ease; }
+.caption-text .w.on { opacity: 1; }
+.caption.is-animator { border-left-color: #ffffff; }
+.caption.is-animator .caption-who { color: #fff; }
+.caption.is-animator .caption-text { font-style: italic; color: #dfe5ef; }
+
+/* --- barre animateur --- */
+.animatorbar { display: flex; align-items: center; gap: 10px; transition: opacity .3s; }
+.animator-tag {
+  font-family: Orbitron, sans-serif; font-size: 11px; letter-spacing: .2em;
+  padding: 11px 14px; border-radius: 10px;
+  background: rgba(255,255,255,.09); border: 1px solid var(--line); color: #cfd6e4;
+}
+.animatorbar input { flex: 1; }
+.animatorbar button {
+  font: 700 13px Inter, sans-serif; letter-spacing: .06em;
+  padding: 13px 20px; border-radius: 10px; border: 0; cursor: pointer;
+  background: #fff; color: #05060c;
+}
+.animatorbar button.ghost { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+.animatorbar button:hover { filter: brightness(.92); }
+
+/* --------------------------------------------------- MICRO ANIMATEUR */
+/* Push-to-talk : on maintient, on parle, on relache. Une ecoute continue
+   capterait la voix des robots dans les haut-parleurs. */
+.mic {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 16px !important;
+  background: rgba(0,229,255,.12) !important;
+  border: 1px solid rgba(0,229,255,.55) !important;
+  color: #7ee8ff !important;
+  font: 700 13px Inter, sans-serif; letter-spacing: .06em;
+  border-radius: 10px; cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+  -webkit-user-select: none; user-select: none;
+  touch-action: none;
+}
+.mic svg {
+  width: 17px; height: 17px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.9;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.mic:hover { background: rgba(0,229,255,.22) !important; color: #d6f7ff !important; }
+.mic:disabled { opacity: .4; cursor: not-allowed; }
+
+.mic.recording {
+  background: #ff2d55 !important; border-color: #ff2d55 !important; color: #fff !important;
+  animation: micPulse 1.1s ease-in-out infinite;
+}
+.mic.sending { background: rgba(255,255,255,.14) !important; color: #fff !important; }
+
+@keyframes micPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,45,85,.55); }
+  50%      { box-shadow: 0 0 0 9px rgba(255,45,85,0); }
+}
+
+/* Liseré rouge sur toute la scène pendant la prise de parole de l'animateur. */
+body.listening .arena::after {
+  content: ""; position: fixed; inset: 0; z-index: 40; pointer-events: none;
+  box-shadow: inset 0 0 0 2px rgba(255,45,85,.55);
+}
+
+.toast {
+  position: fixed; top: 18px; left: 50%; translate: -50% 0; z-index: 60;
+  background: #2a1216; border: 1px solid #6b2230; color: #ffd9de;
+  padding: 12px 20px; border-radius: 10px; font-size: 14px; max-width: 70vw;
+}
+
+/* ---------------------------------------------------------- VERDICT */
+.verdict {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; padding: 40px;
+  background: rgba(4,6,12,.93); backdrop-filter: blur(10px);
+}
+.verdict h2 { font-family: Orbitron, sans-serif; letter-spacing: .2em; font-size: 26px; margin: 0; }
+.verdict-topic { margin: 0; color: var(--muted); max-width: 780px; text-align: center; }
+.verdict-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: min(1200px, 100%); }
+.vcard {
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  border-radius: 16px; padding: 22px;
+}
+.vcard b { font-family: Orbitron, sans-serif; letter-spacing: .16em; color: var(--c); font-size: 16px; }
+.vcard em { display: block; font-style: normal; font-size: 11px; letter-spacing: .14em;
+            text-transform: uppercase; color: var(--muted); margin: 4px 0 12px; }
+.vcard p { margin: 0; font-size: 16px; line-height: 1.5; }
+.verdict .start { width: auto; padding: 14px 32px; }
+
+@media (max-width: 900px) {
+  .setup-personas, .verdict-cards { grid-template-columns: 1fr; }
+}
