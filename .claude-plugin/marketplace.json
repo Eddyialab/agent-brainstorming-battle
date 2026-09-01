@@ -1,4 +1,5 @@
 {
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "agent-brainstorming-battle",
   "owner": {
     "name": "Eddyialab",
@@ -12,7 +13,8 @@
     {
       "name": "arene",
       "source": "./",
-      "description": "Trois IA debattent a voix haute d'un sujet que tu choisis. Tu peux les couper a tout moment, au clavier ou au micro."
+      "description": "Trois IA debattent a voix haute d'un sujet que tu choisis. Tu peux les couper a tout moment, au clavier ou au micro.",
+      "category": "productivity"
     }
   ]
 }
