@@ -5,8 +5,8 @@
   "description": "L'Arene - trois IA aux visions orthogonales debattent en direct, avec voix et interruption animateur.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "arene": "node scripts/launch.mjs",
+    "start": "node scripts/launch.mjs",
+    "serve": "node server.js",
     "dev": "node --watch server.js"
   },
   "dependencies": {
